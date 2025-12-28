@@ -15,6 +15,7 @@ interface SearchScreenProps {
 }
 
 export function SearchScreen({ user, onLogout }: SearchScreenProps) {
+  const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState<{ content: string; timestamp: Date } | null>(null);
   const [followUps, setFollowUps] = useState<string[]>([]);
@@ -30,7 +31,7 @@ export function SearchScreen({ user, onLogout }: SearchScreenProps) {
     setShowFollowUps(false);
 
     try {
-      const sourcesRes = await fetch('/api/getSources', {
+      const sourcesRes = await fetch(`${API_BASE}/api/getSources`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: searchQuery }),
@@ -38,7 +39,7 @@ export function SearchScreen({ user, onLogout }: SearchScreenProps) {
       if (!sourcesRes.ok) throw new Error('Failed to fetch sources');
       const sources: Source[] = await sourcesRes.json();
 
-      const answerRes = await fetch('/api/getAnswer', {
+      const answerRes = await fetch(`${API_BASE}/api/getAnswer`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: searchQuery, sources }),
@@ -63,7 +64,7 @@ export function SearchScreen({ user, onLogout }: SearchScreenProps) {
         timestamp: new Date(),
       });
 
-      const followRes = await fetch('/api/getSimilarQuestions', {
+      const followRes = await fetch(`${API_BASE}/api/getSimilarQuestions`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: searchQuery, sources }),

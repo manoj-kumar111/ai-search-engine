@@ -12,6 +12,7 @@ interface AuthState {
 }
 
 export function useAuth() {
+  const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -26,7 +27,7 @@ export function useAuth() {
     }
     (async () => {
       try {
-        const res = await fetch('/api/auth/me', {
+        const res = await fetch(`${API_BASE}/api/auth/me`.replace(/\/api\/api\//, '/api/'), {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Invalid token');
@@ -41,7 +42,7 @@ export function useAuth() {
 
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${API_BASE}/api/auth/login`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -58,7 +59,7 @@ export function useAuth() {
 
   const signup = useCallback(async (email: string, password: string, name: string): Promise<boolean> => {
     try {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch(`${API_BASE}/api/auth/signup`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),

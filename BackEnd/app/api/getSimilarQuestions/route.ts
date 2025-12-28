@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { SearchResults } from "@/utils/sharedTypes";
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { env } from "@/utils/env";
 
 export async function POST(request: Request) {
   let { question, sources } = await request.json();
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     });
 
     const questions = similarQuestions.questions || [];
-    return NextResponse.json(questions);
+    return NextResponse.json(questions, { headers: corsHeaders() });
   } catch (error) {
     console.error('Error generating similar questions:', error);
     // Fallback: create simple follow-ups from sources and question
@@ -49,6 +50,18 @@ export async function POST(request: Request) {
     while (base.length < 3) {
       base.push(`What are key subtopics of "${question}"?`);
     }
-    return NextResponse.json(base.slice(0, 3));
+    return NextResponse.json(base.slice(0, 3), { headers: corsHeaders() });
   }
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, { headers: corsHeaders() });
+}
+
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN,
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
 }

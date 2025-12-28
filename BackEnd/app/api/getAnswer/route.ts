@@ -1,6 +1,7 @@
 import { generateText } from 'ai';
 import { SearchResults } from "@/utils/sharedTypes";
 import { google } from '@/utils/clients';
+import { env } from "@/utils/env";
 
 export const maxDuration = 45;
 
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
       });
       return new Response(text, {
         status: 200,
-        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        headers: { 'Content-Type': 'text/plain; charset=utf-8', ...corsHeaders() },
       });
     } catch (modelError: any) {
       const message = String(modelError?.message || '');
@@ -104,7 +105,7 @@ export async function POST(request: Request) {
         `.trim();
         return new Response(html, {
           status: 200,
-          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+          headers: { 'Content-Type': 'text/plain; charset=utf-8', ...corsHeaders() },
         });
       }
       throw modelError;
@@ -115,8 +116,20 @@ export async function POST(request: Request) {
       JSON.stringify({ error: 'An error occurred while processing your request' }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...corsHeaders() },
       }
     );
   }
+}
+
+export async function OPTIONS() {
+  return new Response(null, { headers: corsHeaders() });
+}
+
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN,
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  };
 }
