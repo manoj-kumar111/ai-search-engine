@@ -5,7 +5,7 @@ NexusAI is a two-part app:
 - Backend: Next.js API using Gemini and Google Custom Search, with optional MongoDB + JWT authentication
 
 ## Demo
-- Live Demo: https://example-demo-link.invalid
+- Live Demo: https://nexusai-one-ivory.vercel.app/
   - Replace with your deployed URL once available.
 
 ## Features
