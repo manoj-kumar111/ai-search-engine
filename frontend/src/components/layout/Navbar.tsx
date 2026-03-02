@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { Sparkles, User, LogOut, Sun, Moon } from 'lucide-react';
-import { useState } from 'react';
+import { Sparkles, User, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   user: { name: string; email: string } | null;
@@ -8,13 +7,6 @@ interface NavbarProps {
 }
 
 export function Navbar({ user, onLogout }: NavbarProps) {
-  const [isLightMode, setIsLightMode] = useState(false);
-
-  const toggleTheme = () => {
-    setIsLightMode(!isLightMode);
-    document.documentElement.classList.toggle('light');
-  };
-
   return (
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
@@ -41,16 +33,6 @@ export function Navbar({ user, onLogout }: NavbarProps) {
 
           {/* Right section */}
           <div className="flex items-center gap-3">
-            {/* Theme toggle */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleTheme}
-              className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {isLightMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-            </motion.button>
-
             {/* User profile */}
             {user && (
               <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-secondary/50">
