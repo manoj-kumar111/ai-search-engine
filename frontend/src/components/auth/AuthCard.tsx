@@ -5,8 +5,8 @@ import { SignupForm } from './SignupForm';
 import { Sparkles } from 'lucide-react';
 
 interface AuthCardProps {
-  onLogin: (email: string, password: string) => Promise<boolean>;
-  onSignup: (email: string, password: string, name: string) => Promise<boolean>;
+  onLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  onSignup: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 export function AuthCard({ onLogin, onSignup }: AuthCardProps) {

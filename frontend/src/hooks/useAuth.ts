@@ -40,37 +40,43 @@ export function useAuth() {
     })();
   }, []);
 
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      if (!res.ok) return false;
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        return { success: false, error: data.error || 'Login failed' };
+      }
       const data = await res.json();
       localStorage.setItem('ai_token', data.token);
       setAuthState({ user: data.user, isAuthenticated: true, isLoading: false });
-      return true;
+      return { success: true };
     } catch {
-      return false;
+      return { success: false, error: 'Network error. Please try again.' };
     }
   }, []);
 
-  const signup = useCallback(async (email: string, password: string, name: string): Promise<boolean> => {
+  const signup = useCallback(async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/signup`.replace(/\/api\/api\//, '/api/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),
       });
-      if (!res.ok) return false;
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        return { success: false, error: data.error || 'Signup failed' };
+      }
       const data = await res.json();
       localStorage.setItem('ai_token', data.token);
       setAuthState({ user: data.user, isAuthenticated: true, isLoading: false });
-      return true;
+      return { success: true };
     } catch {
-      return false;
+      return { success: false, error: 'Network error. Please try again.' };
     }
   }, []);
 

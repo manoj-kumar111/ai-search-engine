@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, User, Loader2, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 
 interface SignupFormProps {
-  onSubmit: (email: string, password: string, name: string) => Promise<boolean>;
+  onSubmit: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 export function SignupForm({ onSubmit }: SignupFormProps) {
@@ -34,11 +34,11 @@ export function SignupForm({ onSubmit }: SignupFormProps) {
     }
 
     setIsLoading(true);
-    const success = await onSubmit(email, password, name);
+    const result = await onSubmit(email, password, name);
     setIsLoading(false);
 
-    if (!success) {
-      setError('Something went wrong. Please try again.');
+    if (!result.success) {
+      setError(result.error || 'Something went wrong. Please try again.');
     }
   };
 

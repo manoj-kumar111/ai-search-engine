@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => Promise<boolean>;
+  onSubmit: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
 }
 
 export function LoginForm({ onSubmit }: LoginFormProps) {
@@ -28,11 +28,11 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
     }
 
     setIsLoading(true);
-    const success = await onSubmit(email, password);
+    const result = await onSubmit(email, password);
     setIsLoading(false);
 
-    if (!success) {
-      setError('Invalid credentials. Please try again.');
+    if (!result.success) {
+      setError(result.error || 'Invalid credentials. Please try again.');
     }
   };
 
